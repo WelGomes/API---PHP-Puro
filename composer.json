@@ -1,0 +1,16 @@
+{
+    "name": "welbert/wallet",
+    "autoload": {
+        "psr-4": {
+            "Wallet\\": "src/",
+            "Config\\": "config/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Welbert Gomes",
+            "email": "welbert.gomes12@gmail.com"
+        }
+    ],
+    "require": {}
+}

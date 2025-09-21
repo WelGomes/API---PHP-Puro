@@ -2,7 +2,6 @@
 
 namespace Config;
 
-use Exception;
 use PDO;
 
 class Database

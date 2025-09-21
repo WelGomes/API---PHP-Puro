@@ -11,10 +11,11 @@ abstract class Container
 
     public static function getUserController(): UserController 
     {
+        $json = json_decode(file_get_contents("php://input"), true);
         $database = Database::getConnect();
         $userRepository = new UserRepository($database);
         $userService = new UserService($userRepository);
-        return $userController = new UserController($userService);
+        return new UserController($userService, $json);
     }
 
 }

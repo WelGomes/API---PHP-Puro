@@ -30,7 +30,7 @@ final class User
     {
         $this->id = $id;
     }
-    
+
     public function getName(): string
     {
         return $this->name;

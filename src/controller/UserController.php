@@ -2,47 +2,71 @@
 
 namespace Wallet\controller;
 
-use Wallet\dto\request\UserRequest;
 use Wallet\service\UserService;
 
-final class UserController extends UserValidator
+final class UserController extends Controller
 {
-
     private UserService $userService;
+    private array $json;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, array $json)
     {
         $this->userService = $userService;
+        $this->json = $json;
     }
 
     public function save(): array
     {
-        $json = json_decode(file_get_contents("php://input"), true);
-
-        $this->validation(
-            name: $json['name'],
-            email: $json['email'],
-            password: $json['password']
+        $userSanitize = $this->validationAndSanitization(
+            name: $this->json['name'],
+            email: $this->json['email'],
+            password: $this->json['password'],
         );
 
-        $userCrypto = $this->sanitization(
-            name: $json['name'],
-            email: $json['email'],
-            password: $json['password']
+        $serviceReturn = $this->userService->save($userSanitize);
+
+        return $this->returnAPI($serviceReturn);
+    }
+
+    public function getAll(): array
+    {
+        return $this->userService->getAll();
+    }
+
+    public function getUser(): array
+    {
+        $id = $this->idValidation((int)$_GET['id']);
+
+        $serviceReturn = $this->userService->getUser(id: $id);
+
+        return $this->returnAPI($serviceReturn);
+    }
+
+    public function updateUser(): array
+    {
+        $id = $this->idValidation($this->json['id']);
+
+        $userSanitize = $this->validationAndSanitization(
+            id: $id,
+            name: $this->json['name'],
+            email: $this->json['email'],
+            password: $this->json['password']
         );
 
-        $userRequest = new UserRequest(
-            name: $userCrypto['name'],
-            email: $userCrypto['email'],
-            password: $userCrypto['password']
-        );
+        $serviceReturn = $this->userService->updateUser($userSanitize);
 
-        $serviceReturn = $this->userService->save($userRequest);
+        return $this->returnAPI($serviceReturn);
+    }
+
+    public function deleteUser(): array
+    {
+        $id = $this->idValidation($this->json['id']);
+
+        $serviceReturn = $this->userService->deleteUser(id: $id);
 
         return [
-            'Id' => $serviceReturn->id,
-            'name' => $serviceReturn->name,
-            'email' => $serviceReturn->email,
+            'delete' => $serviceReturn,
         ];
     }
+
 }

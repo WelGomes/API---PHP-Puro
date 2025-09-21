@@ -26,8 +26,6 @@ class Routes
         return $newClass->$methodName();
     }
 
-
-
     public function routes(string $uri, string $resquest): array
     {
         $routes = [
@@ -35,8 +33,15 @@ class Routes
                 '/' => fn() => $this->load("UserController", "save"),
             ],
             'GET' => [
-                '/' => fn() => $this->load("UserController", "get"),
+                '/' => fn() => $this->load("UserController", "getUser"),
+                '/all' => fn() => $this->load("UserController", "getAll"),
             ],
+            'PUT' => [
+                '/' => fn() => $this->load("UserController", "updateUser")
+            ],
+            'DELETE' => [
+                '/delete' => fn() => $this->load("UserController", "deleteUser")
+            ]
         ];
 
         if (!array_key_exists($resquest, $routes)) {

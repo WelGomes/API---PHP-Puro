@@ -30,17 +30,18 @@ class Routes
     {
         $routes = [
             'POST' => [
-                '/' => fn() => $this->load("UserController", "save"),
+                '/login' => fn() => $this->load('UserController', 'login'),
+                '/register' => fn() => $this->load('UserController', 'register'),
             ],
             'GET' => [
-                '/' => fn() => $this->load("UserController", "getUser"),
-                '/all' => fn() => $this->load("UserController", "getAll"),
+                '/api/user' => fn() => $this->load('UserController', 'getUser'),
+                '/api/users' => fn() => $this->load('UserController', 'getAll'),
             ],
             'PUT' => [
-                '/' => fn() => $this->load("UserController", "updateUser")
+                '/api/update' => fn() => $this->load('UserController', 'updateUser')
             ],
             'DELETE' => [
-                '/delete' => fn() => $this->load("UserController", "deleteUser")
+                '/api/delete' => fn() => $this->load('UserController', 'deleteUser')
             ]
         ];
 
@@ -57,7 +58,7 @@ class Routes
 
     private function injectionDependency(string $class): callable
     {
-        return match($class) {
+        return match ($class) {
             'UserController' => fn() => Container::getUserController(),
             default => throw new Exception("Controller {$class} não configurado no container.")
         };

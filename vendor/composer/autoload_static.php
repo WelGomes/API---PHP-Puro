@@ -11,6 +11,10 @@ class ComposerStaticInit1a0c342bbef34297b57abf24929078e2
         array (
             'Wallet\\' => 7,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'C' => 
         array (
             'Config\\' => 7,
@@ -21,6 +25,10 @@ class ComposerStaticInit1a0c342bbef34297b57abf24929078e2
         'Wallet\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Config\\' => 
         array (

@@ -10,17 +10,26 @@ abstract class Controller
 {
 
     protected function validationAndSanitization(
-        string $name,
         string $email,
         string $password,
+        ?string $name = null,
         ?int $id = null,
     ): UserRequest {
 
-        $this->validation(
-            name: $name,
-            email: $email,
-            password: $password,
-        );
+        if (!empty($name)) {
+            $this->validationRegister(
+                name: $name,
+                email: $email,
+                password: $password,
+            );
+        }
+
+        if (empty($name)) {
+            $this->validationLogin(
+                email: $email,
+                password: $password
+            );
+        }
 
         return $this->sanitization(
             id: $id,
@@ -30,12 +39,12 @@ abstract class Controller
         );
     }
 
-    private function validation(
+    private function validationRegister(
         string $name,
         string $email,
         string $password,
     ): void {
-        
+
         if (
             empty($name) ||
             empty($email) ||
@@ -49,10 +58,23 @@ abstract class Controller
         }
     }
 
+    private function validationLogin(
+        string $email,
+        string $password
+    ): void {
+        if (empty($email) || empty($password)) {
+            throw new Exception("Preencha todos os campos!!");
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("E-mail inválido");
+        }
+    }
+
     private function sanitization(
-        string $name,
         string $email,
         string $password,
+        ?string $name,
         ?int $id,
     ): UserRequest {
 
@@ -76,13 +98,30 @@ abstract class Controller
         return htmlspecialchars($id, ENT_QUOTES);
     }
 
-    protected function returnAPI(UserResponse $user): array
-    {
-        return [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-        ];
+    protected function returnAPI(
+        UserResponse $userResponse,
+        ?string $token = null
+    ): array {
+
+        return empty($token) ? [
+            "id" => $userResponse->id,
+            "name" => $userResponse->name,
+            "email" => $userResponse->email,
+        ] :
+            [
+                "id" => $userResponse->id,
+                "name" => $userResponse->name,
+                "email" => $userResponse->email,
+                "token" => $token,
+            ];
     }
 
+    protected function verifyHeader(array $header): string
+    {
+        if (!isset($header["Authorization"])) {
+            throw new Exception("Não se encontra nenhuma chave de token no header");
+        }
+
+        return $header["Authorization"];
+    }
 }

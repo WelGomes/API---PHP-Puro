@@ -18,11 +18,20 @@ final class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function save(UserRequest $userRequest): UserResponse
+    public function register(UserRequest $userRequest): UserResponse
     {
         $user = $this->returnUser(userRequest: $userRequest);
 
-        $repositoryReturn = $this->userRepository->save(user: $user);
+        $repositoryReturn = $this->userRepository->register(user: $user);
+
+        return $this->returnUserResponse(user: $repositoryReturn);
+    }
+
+    public function login(UserRequest $userRequest): UserResponse
+    {
+        $user = $this->returnUser(userRequest: $userRequest);
+
+        $repositoryReturn = $this->userRepository->login(user: $user);
 
         return $this->returnUserResponse(user: $repositoryReturn);
     }

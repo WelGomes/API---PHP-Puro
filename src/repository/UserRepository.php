@@ -16,7 +16,7 @@ final class UserRepository implements RepositoryInterface
         $this->db = $db;
     }
 
-    public function save(User $user): User
+    public function register(User $user): User
     {
         $stmt = $this->db->prepare('INSERT INTO users (name, email, password) VALUES (:name, :email, :password)');
         $stmt->bindValue(':name', $user->getName(), PDO::PARAM_STR);
@@ -28,6 +28,23 @@ final class UserRepository implements RepositoryInterface
         }
 
         $user->setId($this->db->lastInsertId());
+
+        return $user;
+    }
+
+    public function login(User $user): User
+    {
+        $stmt = $this->db->prepare('SELECT * FROM users WHERE email = :email');
+        $stmt->bindValue(':email', $user->getEmail(), PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (empty($result) || !password_verify($user->getPassword(), $result['password'])) {
+            throw new Exception("Usuário ou senha incorreta");
+        }
+
+        $user->setId($result['id']);
+        $user->setName($result['name']);
 
         return $user;
     }

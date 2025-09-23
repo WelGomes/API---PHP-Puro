@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Wallet\\' => array($baseDir . '/src'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Config\\' => array($baseDir . '/config'),
 );
